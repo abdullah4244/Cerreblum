@@ -6,6 +6,7 @@ export interface IUSER {
     password? : string;
     institution : string;
     yearOfStudy : number;
+    roles : [string];
 }
 
 const UserSchema = new mongoose.Schema<IUSER>({
@@ -23,12 +24,18 @@ const UserSchema = new mongoose.Schema<IUSER>({
   },
   institution : {
     type : String,
-    required : true
+    required : false
   },
+  roles: {
+    type: [String],
+    enum: ['admin', 'student'],
+    default: ['student'],
+},
   yearOfStudy : {
     type : Number,
-    required : true
-  }
+    required : false
+  },
+
 })
 
 UserSchema.pre('save' ,async function savePassword(next){

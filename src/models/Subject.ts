@@ -2,7 +2,8 @@ import mongoose,{Schema, Types} from 'mongoose';
 
 interface ISubject {
     title : string;
-    category : Types.ObjectId
+    category : Types.ObjectId,
+    topics : [Types.ObjectId]
     
 }
 const SubjectSchema = new mongoose.Schema<ISubject>({
@@ -14,6 +15,11 @@ const SubjectSchema = new mongoose.Schema<ISubject>({
     type: Schema.Types.ObjectId,
     ref: 'Category',
     required: true
-  }
+  },
+  topics: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Topic'
+  }]
 })
+SubjectSchema.index({ 'topics.title': 1 }, { unique: true });
 export const Subject = mongoose.model<ISubject>('Subject', SubjectSchema);
