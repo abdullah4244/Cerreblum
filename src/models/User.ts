@@ -8,6 +8,8 @@ export interface IUSER {
     yearOfStudy : number;
     roles : [string];
     loginTimestamps : [Date]
+    isSubscribed : Boolean,
+    stripeId : String
 }
 
 const UserSchema = new mongoose.Schema<IUSER>({
@@ -35,6 +37,14 @@ const UserSchema = new mongoose.Schema<IUSER>({
     type: [String],
     enum: ['admin', 'student'],
     default: ['student'],
+},
+isSubscribed : {
+  type : Boolean,
+  default : false
+},
+stripeId :{
+ type : String,
+ unique : true
 },
   yearOfStudy : {
     type : Number,

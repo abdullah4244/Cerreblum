@@ -2,6 +2,8 @@ import { Request ,Response,NextFunction} from "express";
 import {  IUSER, User } from "../models/User";
 import bcrypt from 'bcryptjs';
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import { stripe } from "../utils/stripe";
+import secrets from "../utils/config";
 
 export const verifyToken = async (req  : Request,res :Response ,next:NextFunction) => {
     const token = req.headers['authorization'];
@@ -81,8 +83,13 @@ try {
     if(isExistingUser) {
         return res.status(400).json({error : "User with this email already exists."})
     }
+    const customer = await stripe.customers.create({
+      email : email,
+      name : req.body.name
+    })
    const user = new User({
     ...req.body,
+    stripeId: customer.id
    })
    await user.save()
    const userObj = user.toObject();
@@ -99,4 +106,68 @@ catch(err) {
         error: "Something went wrong"
      })
 }
+}
+
+export const getPlans = async (req:Request,res :Response)=> {
+  try{
+  const { data: prices } = await stripe.prices.list()
+  const productPromises = prices.map(async price => {
+    const product = await stripe.products.retrieve(price.product as string)
+    return {
+      id: price.id,
+      name: product.name,
+      price: price.unit_amount,
+      interval: price.recurring?.interval,
+      currency: price.currency,
+    }
+  })
+  const plans = await Promise.all(productPromises);
+  return res.status(200).json({
+    plans
+  })
+}
+catch(err){
+  console.log(err)
+  return res.status(500).json({
+    error: "Something went wrong"
+ })
+}
+
+
+}
+
+export const createSubscription = async (req : Request, res:Response) => {
+  const { priceId } = req.params;
+  const { email } = req.user as {email: string};
+
+  try {
+    const user = await User.findOne({email :email})
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const lineItems = [
+      {
+        price: priceId,
+        quantity: 1,
+      },
+    ];
+    const session = await stripe.checkout.sessions.create({
+      customer: user.stripeId as string,
+      mode: 'subscription',
+      payment_method_types: ['card'],
+      line_items: lineItems,
+      success_url: `${secrets.CLIENT_URL}/app`,
+      cancel_url: `${secrets.CLIENT_URL}/app`,
+      metadata: {
+        userId: user._id.toString(),
+      },
+    });
+
+    res.json({ id: session.id });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 }
