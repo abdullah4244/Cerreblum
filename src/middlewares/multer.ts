@@ -1,7 +1,9 @@
 import multer from 'multer';
+import fs from 'fs';
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'storage/upload');
+        fs.mkdirSync('./storage', { recursive: true })
+             cb(null, './storage');
     },
     filename: (req, file, cb) => {
         const fileName = file.originalname.toLowerCase().split(' ').join('-');

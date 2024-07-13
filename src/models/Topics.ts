@@ -3,7 +3,8 @@ import mongoose,{Types} from 'mongoose';
 interface ITopic {
     title : string;
     subject : Types.ObjectId
-    pages : [Types.ObjectId]
+    pages : [Types.ObjectId],
+    imageUrl : string
 }
 const topicSchema = new mongoose.Schema<ITopic>({
   title : {
@@ -17,6 +18,10 @@ const topicSchema = new mongoose.Schema<ITopic>({
   pages: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Page'
-  }]
+  }],
+  imageUrl : {
+    type :String,
+    required : true
+  }
 })
 export const Topic = mongoose.model<ITopic>('Topic', topicSchema);

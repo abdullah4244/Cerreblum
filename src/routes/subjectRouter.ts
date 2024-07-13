@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.route('/').get(getSubjects).post(upload.single('photo'),createSubject);
 router.route('/:id').get(getSubjectById)
-router.route('/:id/topic').post(createTopics).get(getTopicsBySubject)
+router.route('/:id/topic').post(upload.single('photo'),createTopics).get(getTopicsBySubject)
 router.get('/:id/topic/:topicId',getTopicById)
 router.route('/:id/topic/:topicId/page').post(createPage).get(getPages)
 router.route('/:id/topic/:topicId/page/:pageId').patch(updatePage).get(getPageById)

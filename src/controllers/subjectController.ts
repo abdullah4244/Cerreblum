@@ -4,13 +4,12 @@ import { Topic } from "../models/Topics";
 import { Page } from "../models/Pages";
 export const createSubject = async (req : Request,res : Response) => {
     try {
-        console.log("Entered here")
        const {categoryId , title} = req.body;
        const photo = req.file?.filename;
-       console.log(photo,"photo here")
        const subject = await Subject.create({
         category : categoryId,
-        title : title
+        title : title,
+        imageUrl : `/upload/${photo}`
        })
        await subject.populate('category')
        res.status(200).json({subject})
@@ -79,13 +78,15 @@ export const createTopics = async (req : Request,res: Response) => {
     try {
          const {id} = req.params;
          const {title} = req.body;
+         const photo = req.file?.filename;
          const subject = await Subject.findOne({_id : id})
          if(!subject) {
             return res.status(404).json({message : "Subject with this id does not exists"});
          }
          const topic = await Topic.create({
             title,
-            subject : subject._id
+            subject : subject._id,
+            imageUrl : `/upload/${photo}`
          })
          subject?.topics.push(topic._id)
          await subject?.save()

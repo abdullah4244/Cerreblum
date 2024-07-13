@@ -26,5 +26,4 @@ const SubjectSchema = new mongoose.Schema<ISubject>({
     required : true
   }
 })
-SubjectSchema.index({ 'topics.title': 1 }, { unique: true });
 export const Subject = mongoose.model<ISubject>('Subject', SubjectSchema);
