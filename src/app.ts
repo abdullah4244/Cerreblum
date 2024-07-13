@@ -14,6 +14,7 @@ app.use(
       origin: "http://localhost:5173",
     })
   );
+  app.use("/upload", express.static("./storage/upload"));
 
 app.use("/api/v1/user", userRouter);
 app.use('/api/v1/category',categoryRouter)

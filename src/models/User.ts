@@ -7,6 +7,7 @@ export interface IUSER {
     institution : string;
     yearOfStudy : number;
     roles : [string];
+    loginTimestamps : [Date]
 }
 
 const UserSchema = new mongoose.Schema<IUSER>({
@@ -25,6 +26,10 @@ const UserSchema = new mongoose.Schema<IUSER>({
   institution : {
     type : String,
     required : false
+  },
+  loginTimestamps: {
+    type: [Date],
+    default: []
   },
   roles: {
     type: [String],

@@ -1,5 +1,5 @@
 import { Request ,Response,NextFunction} from "express";
-import {  User } from "../models/User";
+import {  IUSER, User } from "../models/User";
 import bcrypt from 'bcryptjs';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
@@ -29,6 +29,7 @@ export const login = async (req : Request,res :Response) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
     const token = jwt.sign({ email: isExistingUser.email }, 'secret');
+    isExistingUser.loginTimestamps.push(new Date())
     const userObj = isExistingUser.toObject();
     delete userObj.password
     res.status(200).json({
@@ -55,6 +56,24 @@ export const getMe = async (req:Request,res : Response) => {
    })
   }
 }
+export const getActiveUsers = async (req:Request ,res : Response) => {
+  const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  const endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+  
+  const users = await User.find({
+      loginTimestamps: {
+          $gte: startOfMonth,
+          $lt: endOfMonth
+      }
+  });
+
+  const activeUsersCount = users.filter((user : IUSER) => {
+      const loginsThisMonth = user.loginTimestamps.filter((timestamp : Date) => timestamp >= startOfMonth && timestamp < endOfMonth);
+      return loginsThisMonth.length > 2;
+  }).length;
+
+  return res.status(200).json({activeUsers : activeUsersCount})
+}
 export const signup = async (req : Request,res : Response) => {
 try {
     const {email} = req.body;
@@ -75,6 +94,7 @@ try {
    })
 }
 catch(err) {
+  console.log(err,"error")
     return res.status(404).json({
         error: "Something went wrong"
      })
