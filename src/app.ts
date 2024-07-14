@@ -37,12 +37,14 @@ app.use(
           signature as string,
           webhookSecret
         );
+        console.log("Entered in try")
       } catch (err) {
         console.log(err,"error here")
         console.log(`⚠️  Webhook signature verification failed.`);
         return res.sendStatus(400);
       }
       // Extract the object from the event.
+      console.log("above data",event)
       data = event.data;
       eventType = event.type;
     } else {
