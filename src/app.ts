@@ -6,6 +6,7 @@ import subjectRouter from './routes/subjectRouter';
 import { stripe } from './utils/stripe';
 import secrets from './utils/config';
 import { User } from './models/User';
+import { buffer } from 'micro'
 
 const app = express();
 app.use(express.json())
@@ -17,18 +18,19 @@ app.use(
   );
   app.use("/upload", express.static("./storage"));
   app.post("/webhook", express.raw({ type: 'application/json' }),async (req, res) => {
+    
     let data;
     let eventType;
     // Check if webhook signing is configured.
     const webhookSecret = secrets.WEBHOOK_SECRET;
     if (webhookSecret) {
       // Retrieve the event by verifying the signature using the raw body and secret.
+      const reqBuffer = await buffer(req)
+      const signature = req.headers['stripe-signature']
       let event;
-      let signature = req.headers["stripe-signature"];
-  
       try {
         event = stripe.webhooks.constructEvent(
-          req.body,
+          reqBuffer,
           signature as string,
           webhookSecret
         );
