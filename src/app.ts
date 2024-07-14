@@ -14,12 +14,12 @@ app.post("/webhook", express.raw({ type: 'application/json' }),async (req, res) 
    let data;
    let eventType;
    // Check if webhook signing is configured.
-   const webhookSecret = secrets.WEBHOOK_SECRET;
+   const webhookSecret = secrets.WEBHOOK_SECRET?.trim();
    if (webhookSecret) {
      // Retrieve the event by verifying the signature using the raw body and secret.
      const signature = req.headers['stripe-signature']
      let event;
-     console.log(req.body,"body here")
+     console.log(req,"body here")
      console.log(signature, "signature here")
      console.log(secrets.WEBHOOK_SECRET,"secret here")
      try {
