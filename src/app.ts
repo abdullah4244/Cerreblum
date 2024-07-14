@@ -28,7 +28,7 @@ app.use(
       let event;
       try {
         event = stripe.webhooks.constructEvent(
-          req.body,
+          req.rawBody,
           signature as string,
           webhookSecret
         );

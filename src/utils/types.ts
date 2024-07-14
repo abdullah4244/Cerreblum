@@ -3,5 +3,6 @@ import { Request } from 'express';
 export interface TypedRequest<T extends Query, U> extends Express.Request {
     body: U,
     query: T,
-    user: any
+    user: any,
+    rawBody : any
 }
