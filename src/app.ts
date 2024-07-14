@@ -19,9 +19,6 @@ app.post("/webhook", express.raw({ type: 'application/json' }),async (req, res) 
      // Retrieve the event by verifying the signature using the raw body and secret.
      const signature = req.headers['stripe-signature']
      let event;
-     console.log(req,"body here")
-     console.log(signature, "signature here")
-     console.log(secrets.WEBHOOK_SECRET,"secret heree")
      try {
        event = stripe.webhooks.constructEvent(
          req.body,
@@ -97,7 +94,7 @@ app.use(
     })
   );
   app.use("/upload", express.static("./storage"));
-  // app.use(express.json())
+  app.use(express.json())
 app.use("/api/v1/user", userRouter);
 app.use('/api/v1/category',categoryRouter)
 app.use('/api/v1/subject',subjectRouter)
