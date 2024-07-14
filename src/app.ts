@@ -50,6 +50,8 @@ app.use(
     }
     const { metadata } = data.object
     const stripeId = data.object.customer
+    console.log(data.object,"upp")
+    console.log(stripeId,"Came here");
     switch (eventType) {
       case 'checkout.session.completed':
         // Payment is successful and the subscription is created.
