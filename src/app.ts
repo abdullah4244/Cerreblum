@@ -26,9 +26,10 @@ app.use(
       // Retrieve the event by verifying the signature using the raw body and secret.
       const signature = req.headers['stripe-signature']
       let event;
+      console.log(req.body,"body here")
       try {
         event = stripe.webhooks.constructEvent(
-          req.rawBody,
+          req.body,
           signature as string,
           webhookSecret
         );
