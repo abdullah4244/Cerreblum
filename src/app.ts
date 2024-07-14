@@ -18,7 +18,7 @@ app.use(
   );
   app.use("/upload", express.static("./storage"));
   app.post("/webhook", express.raw({ type: 'application/json' }),async (req, res) => {
-    
+    console.log("Webhook triggered");
     let data;
     let eventType;
     // Check if webhook signing is configured.
