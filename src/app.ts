@@ -19,32 +19,26 @@ app.use(
   app.use("/upload", express.static("./storage"));
   app.post("/webhook", express.raw({ type: 'application/json' }),async (req, res) => {
    try {
-    console.log("Webhook created")
     let data;
     let eventType;
     // Check if webhook signing is configured.
     const webhookSecret = secrets.WEBHOOK_SECRET;
-    console.log(webhookSecret,"Secret created");
     if (webhookSecret) {
-      console.log("Entered in iff")
       // Retrieve the event by verifying the signature using the raw body and secret.
-      const reqBuffer = await buffer(req)
       const signature = req.headers['stripe-signature']
       let event;
       try {
         event = stripe.webhooks.constructEvent(
-          reqBuffer,
+          req.body,
           signature as string,
           webhookSecret
         );
-        console.log("Entered in try")
       } catch (err) {
         console.log(err,"error here")
         console.log(`⚠️  Webhook signature verification failed.`);
         return res.sendStatus(400);
       }
       // Extract the object from the event.
-      console.log("above data",event)
       data = event.data;
       eventType = event.type;
     } else {
@@ -53,7 +47,6 @@ app.use(
       data = req.body.data;
       eventType = req.body.type;
     }
-    console.log("Should be here")
     const { metadata } = data.object
     const stripeId = data.object.customer
     console.log(data.object,"upp")
@@ -98,7 +91,7 @@ app.use(
     res.sendStatus(200);
   }
   catch(err) {
-    console.log(err,"error here")
+    console.log(err,"error")
     res.sendStatus(400);
   }
   });
