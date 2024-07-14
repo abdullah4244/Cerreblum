@@ -16,7 +16,7 @@ app.use(
     })
   );
   app.use("/upload", express.static("./storage"));
-  app.post("/webhook", async (req, res) => {
+  app.post("/webhook", express.raw({ type: 'application/json' }),async (req, res) => {
     let data;
     let eventType;
     // Check if webhook signing is configured.
@@ -33,6 +33,7 @@ app.use(
           webhookSecret
         );
       } catch (err) {
+        console.log(err,"error here")
         console.log(`⚠️  Webhook signature verification failed.`);
         return res.sendStatus(400);
       }
