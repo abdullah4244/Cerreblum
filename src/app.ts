@@ -9,7 +9,6 @@ import { User } from './models/User';
 import { buffer } from 'micro'
 
 const app = express();
-app.use(express.json())
 app.use(
     cors({
       credentials: true,
@@ -95,6 +94,7 @@ app.use(
     res.sendStatus(400);
   }
   });
+  app.use(express.json())
 app.use("/api/v1/user", userRouter);
 app.use('/api/v1/category',categoryRouter)
 app.use('/api/v1/subject',subjectRouter)
