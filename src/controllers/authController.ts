@@ -58,10 +58,14 @@ export const getMe = async (req:Request,res : Response) => {
    })
   }
 }
-export const getActiveUsers = async (req:Request ,res : Response) => {
+export const getDashboardAnalytics= async (req:Request ,res : Response) => {
   const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
   const endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
   
+  const premiumUsers = await User.find({
+    isSubscribed :true
+  })
+  const totalUsers = await User.find({})
   const users = await User.find({
       loginTimestamps: {
           $gte: startOfMonth,
@@ -74,7 +78,7 @@ export const getActiveUsers = async (req:Request ,res : Response) => {
       return loginsThisMonth.length > 2;
   }).length;
 
-  return res.status(200).json({activeUsers : activeUsersCount})
+  return res.status(200).json({activeUsers : activeUsersCount,premiumUsers :premiumUsers.length,totalUsers:totalUsers.length})
 }
 export const signup = async (req : Request,res : Response) => {
 try {
