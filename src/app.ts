@@ -18,7 +18,7 @@ app.use(
   );
   app.use("/upload", express.static("./storage"));
   app.post("/webhook", express.raw({ type: 'application/json' }),async (req, res) => {
-    console.log("Webhook triggered");
+   try {
     let data;
     let eventType;
     // Check if webhook signing is configured.
@@ -90,6 +90,11 @@ app.use(
     }
   
     res.sendStatus(200);
+  }
+  catch(err) {
+    console.log(err,"error here")
+    res.sendStatus(400);
+  }
   });
 app.use("/api/v1/user", userRouter);
 app.use('/api/v1/category',categoryRouter)
