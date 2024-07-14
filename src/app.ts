@@ -21,7 +21,7 @@ app.post("/webhook", express.raw({ type: 'application/json' }),async (req, res) 
      let event;
      console.log(req,"body here")
      console.log(signature, "signature here")
-     console.log(secrets.WEBHOOK_SECRET,"secret here")
+     console.log(secrets.WEBHOOK_SECRET,"secret heree")
      try {
        event = stripe.webhooks.constructEvent(
          req.body,
