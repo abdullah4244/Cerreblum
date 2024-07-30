@@ -4,7 +4,8 @@ interface ITopic {
     title : string;
     subject : Types.ObjectId
     pages : [Types.ObjectId],
-    imageUrl : string
+    imageUrl : string,
+    isPremium : Boolean;
 }
 const topicSchema = new mongoose.Schema<ITopic>({
   title : {
@@ -22,6 +23,10 @@ const topicSchema = new mongoose.Schema<ITopic>({
   imageUrl : {
     type :String,
     required : true
+  },
+  isPremium : {
+    type : Boolean,
+    default : false
   }
 })
 export const Topic = mongoose.model<ITopic>('Topic', topicSchema);

@@ -77,7 +77,7 @@ export const deleteSubjectById = async (req :Request ,res :Response) => {
 export const createTopics = async (req : Request,res: Response) => {
     try {
          const {id} = req.params;
-         const {title} = req.body;
+         const {title,isPremium} = req.body;
          const photo = req.file?.filename;
          const subject = await Subject.findOne({_id : id})
          if(!subject) {
@@ -86,6 +86,7 @@ export const createTopics = async (req : Request,res: Response) => {
          const topic = await Topic.create({
             title,
             subject : subject._id,
+            isPremium : isPremium ? true : false,
             imageUrl : `/upload/${photo}`
          })
          subject?.topics.push(topic._id)

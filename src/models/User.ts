@@ -9,7 +9,9 @@ export interface IUSER {
     roles : [string];
     loginTimestamps : [Date]
     isSubscribed : Boolean,
-    stripeId : String
+    stripeId : String,
+    gems: number;
+    hearts : number;
 }
 
 const UserSchema = new mongoose.Schema<IUSER>({
@@ -50,6 +52,14 @@ stripeId :{
     type : Number,
     required : false
   },
+  gems :{
+    type : Number,
+    default: 0
+  },
+  hearts : {
+    type : Number,
+    default : 0
+  }
 
 })
 
